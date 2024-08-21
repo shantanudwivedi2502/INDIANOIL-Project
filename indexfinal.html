@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel to Bar Chart</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        canvas {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload Excel File and Generate Bar Charts</h1>
+    <input type="file" id="fileInput" />
+    <button onclick="generateGraph()">Generate Graphs</button>
+    <canvas id="graph1"></canvas>
+    <canvas id="graph2"></canvas>
+    <canvas id="graph3"></canvas>
+    <canvas id="graph4"></canvas>
+    <canvas id="graph5"></canvas>
+    <canvas id="graph6"></canvas> <!-- Added canvas for the sixth graph -->
+
+    <script>
+        let workbook, sheetData;
+
+        document.getElementById('fileInput').addEventListener('change', handleFile, false);
+
+        function handleFile(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                workbook = XLSX.read(data, { type: 'array' });
+                sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1 });
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function generateGraph() {
+            if (!sheetData) {
+                alert('Please upload an Excel file first.');
+                return;
+            }
+
+            generateGraph1();
+            generateGraph2();
+            generateGraph3();
+            generateGraph4();
+            generateGraph5();
+            generateGraph6(); // Call the function to generate the sixth graph
+        }
+
+        function generateGraph1() {
+            const xData = sheetData.slice(1).map(row => row[1]); // Second column for x-axis
+            const yData = sheetData.slice(1).map(row => Number(row[8])); // Convert to number for y-axis
+
+            // Set bars to blue color
+            const colorData = sheetData.slice(1).map(row => 'rgba(54, 162, 235, 0.6)'); // Blue color with transparency
+
+            if (!xData.length || !yData.length) {
+                alert('The second or eighth column is empty or missing.');
+                return;
+            }
+
+            const ctx = document.getElementById('graph1').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: xData,
+                    datasets: [{
+                        label: 'BSNL bandwidth',
+                        data: yData,
+                        backgroundColor: colorData, // Use blue color
+                        borderColor: colorData.map(color => color.replace('0.6', '1')), // Create a border color with full opacity
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: sheetData[0][1] || 'X-Axis'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: sheetData[0][8] || 'Y-Axis'
+                            },
+                            min: 1, // Set the minimum value of the y-axis
+                            max: 50, // Set the maximum value of the y-axis
+                            ticks: {
+                                stepSize: 5 // Set step size to 5
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateGraph2() {
+            const xData = sheetData.slice(1).map(row => row[1]); // Second column for x-axis
+            const yData = sheetData.slice(1).map(row => Number(row[12])); // Convert to number for y-axis
+
+            if (!xData.length || !yData.length) {
+                alert('The second or thirteenth column is empty or missing.');
+                return;
+            }
+
+            const ctx = document.getElementById('graph2').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: xData,
+                    datasets: [{
+                        label: 'JIO bandwidth',
+                        data: yData,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)', // Another color with transparency
+                        borderColor: 'rgba(75, 192, 192, 1)', // Another color border
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: sheetData[0][1] || 'X-Axis'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: sheetData[0][12] || 'Y-Axis'
+                            },
+                            min: 1, // Set the minimum value of the y-axis
+                            max: 50, // Set the maximum value of the y-axis
+                            ticks: {
+                                stepSize: 5 // Set step size to 5
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateGraph3() {
+            const xData = sheetData.slice(1).map(row => row[1]); // Second column for x-axis
+            const yData = sheetData.slice(1).map(row => Number(row[4])); // Convert to number for y-axis
+
+            if (!xData.length || !yData.length) {
+                alert('The second or fifth column is empty or missing.');
+                return;
+            }
+
+            const ctx = document.getElementById('graph3').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: xData,
+                    datasets: [{
+                        label: 'AIRTEL Bandwith',
+                        data: yData,
+                        backgroundColor: 'rgba(255, 159, 64, 0.6)', // Orange color with transparency
+                        borderColor: 'rgba(255, 159, 64, 1)', // Orange border
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: sheetData[0][1] || 'X-Axis'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: sheetData[0][4] || 'Y-Axis'
+                            },
+                            min: 1, // Set the minimum value of the y-axis
+                            max: 50, // Set the maximum value of the y-axis
+                            ticks: {
+                                stepSize: 5 // Set step size to 5
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateGraph4() {
+            const xData = sheetData.slice(1).map(row => row[1]); // Second column for x-axis
+            const yData = sheetData.slice(1).map(row => row[5]); // Take values from the 6th column
+
+            if (!xData.length || !yData.length) {
+                alert('The second or sixth column is empty or missing.');
+                return;
+            }
+
+            const ctx = document.getElementById('graph4').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: xData,
+                    datasets: [{
+                        label: 'Aitel Status',
+                        data: yData.map(value => value === 'Up' ? 0 : 1), // Map 'up' to 0 and 'NA' to 1 for plotting
+                        backgroundColor: yData.map(value => value === 'Up' ? 'green' : 'red'), // Color bars accordingly
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: sheetData[0][1] || 'X-Axis'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Status'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value === 0 ? 'Up' : 'NA';
+                                },
+                                stepSize: 1,
+                                min: 0,
+                                max: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateGraph5() {
+            const xData = sheetData.slice(1).map(row => row[1]); // Second column for x-axis
+            const yData = sheetData.slice(1).map(row => row[9]); // Take values from the 10th column
+
+            if (!xData.length || !yData.length) {
+                alert('The second or tenth column is empty or missing.');
+                return;
+            }
+
+            const ctx = document.getElementById('graph5').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: xData,
+                    datasets: [{
+                        label: 'BSNL Status',
+                        data: yData.map(value => value === 'Up' ? 0 : 1), // Map 'up' to 0 and 'NA' to 1 for plotting
+                        backgroundColor: yData.map(value => value === 'Up' ? 'green' : 'red'), // Color bars accordingly
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: sheetData[0][1] || 'X-Axis'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Status'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value === 0 ? 'Up' : 'NA';
+                                },
+                                stepSize: 1,
+                                min: 0,
+                                max: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateGraph6() {
+            const xData = sheetData.slice(1).map(row => row[1]); // Second column for x-axis
+            const yData = sheetData.slice(1).map(row => row[13]); // Take values from the 14th column
+
+            if (!xData.length || !yData.length) {
+                alert('The second or fourteenth column is empty or missing.');
+                return;
+            }
+
+            const ctx = document.getElementById('graph6').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: xData,
+                    datasets: [{
+                        label: 'JIO Status',
+                        data: yData.map(value => value === 'Up' ? 0 : 1), // Map 'up' to 0 and 'NA' to 1 for plotting
+                        backgroundColor: yData.map(value => value === 'Up' ? 'green' : 'red'), // Color bars accordingly
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: sheetData[0][1] || 'X-Axis'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Status'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value === 0 ? 'Up' : 'NA';
+                                },
+                                stepSize: 1,
+                                min: 0,
+                                max: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
